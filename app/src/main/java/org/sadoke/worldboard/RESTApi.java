@@ -24,7 +24,6 @@ public class RESTApi {
         this.context = context;
         queue = Volley.newRequestQueue(context);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Log.e("prefs", prefs.getAll().toString());
         String systemUserToken = prefs.getString("user_token", null);
         if (systemUserToken == null) {
             createUser(result -> {
