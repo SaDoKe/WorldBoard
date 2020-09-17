@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);#
+        setContentView(R.layout.activity_main);
         imgCompass=(ImageView)findViewById(R.id.imgCompass);
         txtDegrees=(TextView)findViewById(R.id.txtDegrees);
         sensorManager=(SensorManager)getSystemService(SENSOR_SERVICE);
