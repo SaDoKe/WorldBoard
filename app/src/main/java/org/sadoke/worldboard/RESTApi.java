@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -54,6 +55,33 @@ public class RESTApi {
 
         // Access the RequestQueue
         queue.add(postalRequest);
+    }
+
+    /**
+     * Sends a new message whit the userKey, the message and the location to the Server.
+     * @param message
+     * @param callback
+     * @param longitude
+     * @param lattitude
+     */
+    private void createMessage(String message, VolleyCallback<JSONObject> callback, float longitude,float lattitude){
+        String url = String.format(serverAddress, "message/create/" + this.userToken);
+
+        JSONObject jsonBody = new JSONObject();
+        JSONObject jsonPosition = new JSONObject();
+        try {
+            jsonBody.put("message",message);
+            jsonPosition.put("longitude",longitude);
+            jsonPosition.put("lattitude",lattitude);
+            jsonBody.put("position",jsonPosition);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("MessageCreate","Fehler beim erstellen des Bodys in createMessage");
+        }
+        JsonObjectRequest postalRequest = new JsonObjectRequest( url, jsonBody,
+                callback::onSuccess,
+                error -> Log.e("sendError", "ein Oopsi:"+error.toString())
+        );
     }
 
     public void getNextMessage(Float lat, Float lng, VolleyCallback<JSONObject> callback) {
