@@ -2,8 +2,9 @@ package org.sadoke.worldboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
+
+import androidx.preference.PreferenceManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,30 +21,44 @@ public class RESTApi {
     private String userToken;
     private String serverAddress = "http://h2877718.stratoserver.net:8080/worldboard/%s";
 
+    /**
+     * Private Constructor, initilize Object
+     * @param context
+     * Context of calling instance
+     */
     private RESTApi(Context context) {
         this.context = context;
         queue = Volley.newRequestQueue(context);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String systemUserToken = prefs.getString("user_token", null);
-        if (systemUserToken == null) {
-            createUser(result -> {
+        this.userToken = prefs.getString("user_token", null);
+        if (userToken == null)
+            createUser( result -> {
                 try {
-                    userToken = new JSONObject(result).getString("key");
-                    prefs.edit().putString("user_token", userToken).apply();
+                    this.userToken = new JSONObject(result).getString("key");
+                    prefs.edit().putString("user_token", this.userToken).apply();
                 } catch (JSONException e) {
                     Log.e("Error in get user token", e.getMessage());
                 }
             });
-        } else
-            this.userToken = systemUserToken;
     }
 
+    /**
+     * Creates Static RESTApi Object
+     * @param context
+     * @return Static instance of RESTApi
+     */
     public static RESTApi init(Context context) {
         if (restApi == null)
             restApi = new RESTApi(context);
+        restApi.context = context;
         return restApi;
     }
 
+    /**
+     * Requests a new User from Server
+     * @param callback
+     * Callback funktion, used for async Server Answer
+     */
     private void createUser(VolleyCallback<String> callback) {
         String url = String.format(serverAddress, "user/create/" + context.getResources().getString(R.string.world_board_api_key));
 
@@ -56,6 +71,15 @@ public class RESTApi {
         queue.add(postalRequest);
     }
 
+    /**
+     * Sends Actuel Position and gets List of near by Messages
+     * @param lat
+     * Latitude of user
+     * @param lng
+     * Longitude of user
+     * @param callback
+     * Callback funktion, used for async Server Answer
+     */
     public void getNextMessage(Float lat, Float lng, VolleyCallback<JSONObject> callback) {
        String url = String.format(serverAddress, "message/next/" + userToken + "?lattitude=" + lat + "&longitude=" + lng);
 
