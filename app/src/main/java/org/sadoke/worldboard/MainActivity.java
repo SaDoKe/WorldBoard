@@ -7,10 +7,13 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -18,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView txtDegrees;
     private SensorManager sensorManager;
     private float currentDegree;
+
+    private RESTApi api;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -27,6 +32,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         imgCompass=(ImageView)findViewById(R.id.imgCompass);
         txtDegrees=(TextView)findViewById(R.id.txtDegrees);
         sensorManager=(SensorManager)getSystemService(SENSOR_SERVICE);
+
+        api = RESTApi.init(this);
+        api.getNextMessage(0F, 0F, result -> Log.e("test", result.toString()) );
+
     }
 
     @Override
