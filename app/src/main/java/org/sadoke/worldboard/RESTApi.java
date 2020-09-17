@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -108,6 +107,15 @@ public class RESTApi {
         );
     }
 
+    /**
+     * Sends Actuel Position and gets List of near by Messages
+     * @param lat
+     * Latitude of user
+     * @param lng
+     * Longitude of user
+     * @param callback
+     * Callback funktion, used for async Server Answer
+     */
     public void getNextMessage(Float lat, Float lng, VolleyCallback<JSONObject> callback) {
        String url = String.format(serverAddress, "message/next/" + userToken + "?lattitude=" + lat + "&longitude=" + lng);
 
