@@ -10,11 +10,14 @@ import static java.lang.Math.*;
 
 public class Interpreter {
     int MULTIPLIKATOR = 1000;
-    private Interpreter interpreter;
+    private static Interpreter interpreter;
 
     private Interpreter(){
     }
-    public Interpreter getInterpreter(){
+
+    public static Interpreter getInterpreter(){
+        if (interpreter == null)
+            interpreter = new Interpreter();
         return interpreter;
     }
 
@@ -38,7 +41,7 @@ public class Interpreter {
      * @return
      */
     public JSONObject accelerometer (SensorEvent event){
-        JSONObject accelerometerJSON= new JSONObject();
+        JSONObject accelerometerJSON = new JSONObject();
         try {
             accelerometerJSON.put("x_Axis",event.values[0]);
             accelerometerJSON.put("y_Axis",event.values[1]);

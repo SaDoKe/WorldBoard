@@ -88,9 +88,7 @@ class SensorManagementClass(private val activity: MainActivity) : SensorEventLis
                 val lat = (loc.latitude - mLocation!!.latitude) * multiplier
                 val lng = (loc.longitude - mLocation!!.longitude) * multiplier
 
-                var a: Int? = null
                 activity.sendLogs(JSONObject().apply {
-                    put("id", a ?: JSONObject.NULL)
                     put("accel", windows)
                     put("movementVector", sqrt(lat.pow(2.0) + lng.pow(2.0)))
                 })

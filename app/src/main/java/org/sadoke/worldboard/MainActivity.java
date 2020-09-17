@@ -22,6 +22,7 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         imgCompass = (ImageView) findViewById(R.id.imgCompass);
         txtDegrees = (TextView) findViewById(R.id.txtDegrees);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
         api = RESTApi.init(this);
         api.getNextMessage(0F, 0F, result -> Log.e("test", result.toString()));
 
