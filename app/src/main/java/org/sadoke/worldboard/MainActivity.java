@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel mainViewModel;
     private SensorDataManager sensorManager;
     public FusedLocationTracker fusedLocationTracker;
+    private Handler handler = new Handler();
+    private Runnable runnable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                Location location = fusedLocationTracker.getLastLocation();
+                api.getNextMessage(location.getLatitude(), location.getLongitude(), result -> {
+                    Log.e("ghghghghg", result.toString());
+                });
+                handler.postDelayed(this, 5000);
+            }
+        };
+        handler.post(runnable);
     }
 
     @Override

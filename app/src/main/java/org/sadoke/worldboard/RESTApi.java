@@ -119,7 +119,7 @@ public class RESTApi {
      * @param lng      Longitude of user
      * @param callback Callback funktion, used for async Server Answer
      */
-    public void getNextMessage(Float lat, Float lng, VolleyCallback<JSONObject> callback) {
+    public void getNextMessage(double lat, double lng, VolleyCallback<JSONObject> callback) {
         String url = String.format(serverAddress, "message/next/" + userToken + "?lattitude=" + lat + "&longitude=" + lng);
 
         StringRequest postalRequest = new StringRequest(Request.Method.GET, url,
