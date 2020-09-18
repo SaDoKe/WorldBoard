@@ -176,6 +176,32 @@ public class Interpreter {
         }
         return locationJSON;
     }
+
+    /**
+     * [Latitude,longitude]
+     * @param lokU
+     * @param lokM
+     * @return
+     */
+    public double degreeToMessage(double lokU[], double lokM[]) {
+            double lokNordpol[] = new double[2];
+            double degree;
+            double rad;
+
+            lokNordpol[0] = 90;
+            lokNordpol[1] = 0;
+            double vektorNord[] = new double[2];
+            vektorNord[0] = lokNordpol[0]-lokU[0];
+            vektorNord[1] = lokNordpol[1]-lokU[1];
+            double vektorMessage[] = new double[2];
+            vektorMessage[0] = lokM[0]-lokU[0];
+            vektorMessage[1] = lokM[1]-lokU[1];
+
+            rad = Math.acos((vektorNord[0]*vektorMessage[0]+vektorNord[1]*vektorMessage[1])/(Math.sqrt(vektorNord[0]*vektorNord[0]+vektorNord[1]*vektorNord[1]))*Math.sqrt(vektorMessage[0]*vektorMessage[0]+vektorMessage[1]*vektorMessage[1]));
+            degree = Math.toDegrees(rad);
+
+            return degree;
+    }
 }
 
 
