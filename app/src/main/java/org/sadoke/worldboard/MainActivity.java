@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checkNeededPermissions();
         mainViewModel = new ViewModelProvider(
                 this,
                 new MainViewModel(this).getDefaultViewModelProviderFactory()
@@ -52,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
         txtDegrees = (TextView) findViewById(R.id.txtDegrees);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fusedLocationTracker = new FusedLocationTracker(this);
-        fusedLocationTracker.startTracking();
+        if (checkNeededPermissions())
+            fusedLocationTracker.startTracking();
         sensorManager = new SensorDataManager(this, mainViewModel);
         api = RESTApi.init(this);
 
@@ -69,11 +69,13 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener( view -> {
                     Intent intent = new Intent(this, CreateMessageActivity.class);
                     Location location = fusedLocationTracker.getLastLocation();
-                    Log.e("Address", location.getLatitude()+"");
-                    Log.e("Address2", location.getLongitude()+"");
-                    intent.putExtra("LAT", location.getLatitude());
-                    intent.putExtra("LNG", location.getLongitude());
-                    startActivity(intent);
+                    if (location != null) {
+                        Log.e("Address", location.getLatitude() + "");
+                        Log.e("Address2", location.getLongitude() + "");
+                        intent.putExtra("LAT", location.getLatitude());
+                        intent.putExtra("LNG", location.getLongitude());
+                        startActivity(intent);
+                    }
                 }
         );
     }

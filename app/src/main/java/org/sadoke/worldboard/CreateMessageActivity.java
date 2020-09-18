@@ -40,7 +40,7 @@ public class CreateMessageActivity extends AppCompatActivity {
             String message = String.valueOf(editText.getText());
             restApi.createMessage(message,result -> {
                 editText.setText("Succes");
-            },getIntent().getFloatExtra("LNG",-1),getIntent().getFloatExtra("LAT",-1));
+            },getIntent().getDoubleExtra("LNG",-1),getIntent().getDoubleExtra("LAT",-1));
         });
     }
 }

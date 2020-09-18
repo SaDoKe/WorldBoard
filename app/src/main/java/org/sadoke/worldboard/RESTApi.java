@@ -90,7 +90,7 @@ public class RESTApi {
      * @param longitude
      * @param lattitude
      */
-     public void createMessage(String message, VolleyCallback<JSONObject> callback, float longitude, float lattitude) {
+     public void createMessage(String message, VolleyCallback<JSONObject> callback, double longitude, double lattitude) {
         String url = String.format(serverAddress, "message/create/" + this.userToken);
 
         JSONObject jsonBody = new JSONObject();
@@ -104,6 +104,7 @@ public class RESTApi {
             e.printStackTrace();
             Log.e("MessageCreate", "Fehler beim erstellen des Bodys in createMessage");
         }
+        Log.d("request body",jsonBody.toString());
         JsonObjectRequest postalRequest = new JsonObjectRequest(url, jsonBody,
                 callback::onSuccess,
                 error -> Log.e("sendError", "ein Oopsi:" + error.toString())
