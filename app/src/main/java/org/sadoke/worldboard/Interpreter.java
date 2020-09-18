@@ -72,7 +72,7 @@ public class Interpreter {
             float orientation[] = new float[3];
             SensorManager.getOrientation(R, orientation);
             azimuth = (float) Math.toDegrees(orientation[0]); // orientation
-            azimuth = (azimuth - 90 + 360) % 360;
+            azimuth = (azimuth  + 360) % 360;
             return azimuth;
         }
         return azimuth;
@@ -94,7 +94,7 @@ public class Interpreter {
         mAzimuth = (int)((Math.toDegrees(SensorManager.getOrientation(rMat,orientation)[0])+360)%360);
 
         mAzimuth = Math.round(mAzimuth);
-        return -mAzimuth;
+        return -mAzimuth-90;
     }
     /**
      * Returns the accelerometer fields in a JSON object.
@@ -127,7 +127,7 @@ public class Interpreter {
      * @param locNach    [latitude,longitude]
      * @return
      */
-    public JSONObject movementVector(ArrayList<Float> accList, int multiplier, float[] locVor, float[] locNach) throws JSONException {
+    public JSONObject movementVector(ArrayList<Float> accList, float[] locVor, float[] locNach) throws JSONException {
         int length = (accList.size() / 3);
         JSONArray jsons = new JSONArray();
         double movementVektor;
