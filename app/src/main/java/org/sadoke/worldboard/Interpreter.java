@@ -2,6 +2,7 @@ package org.sadoke.worldboard;
 
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,6 +12,8 @@ import static java.lang.Math.*;
 
 public class Interpreter {
     int MULTIPLIKATOR = 1000;
+    float azimuth=0;
+
     private static Interpreter interpreter;
 
     private Interpreter(){
@@ -44,8 +47,6 @@ public class Interpreter {
         float[] mGeomagnetic = new float[3];
         float[] R = new float[9];
         float[] I = new float[9];
-        float azimuthFix = 180;
-        float azimuth;
 
         mGravity[0] = ALPHA * mGravity[0] + (1 - ALPHA)
                 * mGravityEvent.values[0];
@@ -63,11 +64,13 @@ public class Interpreter {
 
         boolean success = SensorManager.getRotationMatrix(R, I, mGravity,
                 mGeomagnetic);
-
-        float orientation[] = new float[3];
-        SensorManager.getOrientation(R, orientation);
-        azimuth = (float) Math.toDegrees(orientation[0]); // orientation
-        azimuth = (azimuth + azimuthFix + 360) % 360;
+        if(success) {
+            float orientation[] = new float[3];
+            SensorManager.getOrientation(R, orientation);
+            azimuth = (float) Math.toDegrees(orientation[0]); // orientation
+            azimuth = (azimuth - 90 + 360) % 360;
+            return azimuth;
+        }
         return azimuth;
     }
 

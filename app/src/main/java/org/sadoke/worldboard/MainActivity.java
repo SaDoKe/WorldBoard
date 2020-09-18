@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
         mainViewModel.getDegree().observe(this, degree -> {
             txtDegrees.setText("Rotation: " + degree + " degrees");
-            RotateAnimation ra = new RotateAnimation(currentDegree, -degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            RotateAnimation ra = new RotateAnimation(currentDegree, degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             ra.setDuration(120);
             ra.setFillAfter(true);
             imgCompass.startAnimation(ra);
-            currentDegree = -degree;
+            currentDegree = degree;
         });
 
     }
