@@ -4,16 +4,34 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.HasDefaultViewModelProviderFactory;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.json.JSONObject;
 import org.sadoke.worldboard.MainActivity;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Objects;
 
 public class MainViewModel extends ViewModel implements HasDefaultViewModelProviderFactory {
     MainActivity mainActivity;
+
+    /**
+     * Makes a LiveData out of JSONObject
+     */
+    private MutableLiveData<JSONObject> degree;
+    public LiveData<JSONObject> getDegree() {
+        if (degree == null) {
+            degree = new MutableLiveData<JSONObject>();
+        }
+        return degree;
+    }
+    private void setDegree(JSONObject jsonDegree){
+        degree.setValue(jsonDegree);
+    }
 
     public MainViewModel(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
