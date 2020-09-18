@@ -22,6 +22,8 @@ public class SensorDataManager implements SensorEventListener {
         public void run() {
             sensorManager.registerListener(SensorDataManager.this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 0);
             sensorManager.registerListener(SensorDataManager.this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), 0);
+            sensorManager.registerListener(SensorDataManager.this, sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), 0);
+
             handler.postDelayed(this, 400);
         }
     };
@@ -44,20 +46,24 @@ public class SensorDataManager implements SensorEventListener {
 
     SensorEvent mGravity;
     SensorEvent mGeomagnetic;
+    SensorEvent mRotationVector;
 
     @Override
     public synchronized void onSensorChanged(SensorEvent sensorEvent) {
         switch (sensorEvent.sensor.getType()) {
             case Sensor.TYPE_MAGNETIC_FIELD:
-                mGeomagnetic = sensorEvent;
-                if (mGravity != null && mGeomagnetic != null)
-                    mainViewModel.setDegree(interpreter.degreeNord(mGravity, mGeomagnetic));
+                mGravity = sensorEvent;
                 break;
             case Sensor.TYPE_ACCELEROMETER:
-                mGravity = sensorEvent;
+                mGeomagnetic = sensorEvent;
                 interpreter.accelerometer(sensorEvent);
                 break;
+            case Sensor.TYPE_ROTATION_VECTOR:
+                mRotationVector = sensorEvent;
+                break;
         }
+        if (mGravity != null && mGeomagnetic != null)
+            mainViewModel.setDegree(interpreter.degreeNord(mRotationVector,mGravity, mGeomagnetic));
     }
 
     @Override

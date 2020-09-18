@@ -7,7 +7,10 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import static java.lang.Math.*;
 
 public class Interpreter {
@@ -64,6 +67,7 @@ public class Interpreter {
 
         boolean success = SensorManager.getRotationMatrix(R, I, mGravity,
                 mGeomagnetic);
+        Log.e("d", Arrays.toString(R));
         if(success) {
             float orientation[] = new float[3];
             SensorManager.getOrientation(R, orientation);
@@ -74,6 +78,24 @@ public class Interpreter {
         return azimuth;
     }
 
+    public float degreeNord(SensorEvent mRotationEvent,SensorEvent mGravityEvent, SensorEvent mGeomagneticEvent){
+        int mAzimuth;
+        float[] rMat = new float[9];
+        float[] orientation = new float[9];
+        float[] mLastMagnetometer = new float[3];
+        float[] mLastAccelerometer = new float[3];
+
+
+        SensorManager.getRotationMatrixFromVector(rMat,mRotationEvent.values);
+        System.arraycopy(mGravityEvent.values,0,mLastAccelerometer,0,mGravityEvent.values.length);
+        System.arraycopy(mGravityEvent.values,0,mLastMagnetometer,0,mGravityEvent.values.length);
+        SensorManager.getRotationMatrix(rMat,null,mLastAccelerometer,mLastMagnetometer);
+        SensorManager.getOrientation(rMat,orientation);
+        mAzimuth = (int)((Math.toDegrees(SensorManager.getOrientation(rMat,orientation)[0])+360)%360);
+
+        mAzimuth = Math.round(mAzimuth);
+        return -mAzimuth;
+    }
     /**
      * Returns the accelerometer fields in a JSON object.
      * like

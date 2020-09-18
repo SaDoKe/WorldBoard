@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainViewModel.getDegree().observe(this, degree -> {
             txtDegrees.setText("Rotation: " + degree + " degrees");
-            RotateAnimation ra = new RotateAnimation(-currentDegree, -degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            RotateAnimation ra = new RotateAnimation(currentDegree, degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             currentDegree = degree;
             ra.setDuration(500);
             ra.setRepeatCount(0);
