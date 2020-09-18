@@ -9,11 +9,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.json.JSONObject;
 import org.sadoke.worldboard.MainActivity;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Objects;
 
 public class MainViewModel extends ViewModel implements HasDefaultViewModelProviderFactory {

@@ -7,18 +7,12 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Handler;
 
-import androidx.lifecycle.ViewModelProvider;
-
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.sadoke.worldboard.Interpreter;
 import org.sadoke.worldboard.MainActivity;
-import org.sadoke.worldboard.locationtracker.FusedLocationTracker;
 import org.sadoke.worldboard.ui.main.MainViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -31,7 +25,6 @@ public class SensorDataManager implements SensorEventListener {
             sensorManager.registerListener(SensorDataManager.this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 0);
             sensorManager.registerListener(SensorDataManager.this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), 0);
             sensorManager.registerListener(SensorDataManager.this, sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), 0);
-
             handler.postDelayed(this, 400);
         }
     };
@@ -87,7 +80,11 @@ public class SensorDataManager implements SensorEventListener {
             if (windowCounter == 5) {
                 Location loc = mainActivity.fusedLocationTracker.getLastLocation();
                 try {
-                    mainActivity.sendLogs(interpreter.movementVector(windows, 1000, new double[]{mLocation.getLatitude(), mLocation.getLongitude()}, new double[]{loc.getLatitude(), loc.getLongitude()}));
+                    mainActivity.sendLogs(
+                            interpreter.movementVector(windows, 1000,
+                                    new double[]{mLocation.getLatitude(), mLocation.getLongitude()},
+                                    new double[]{loc.getLatitude(), loc.getLongitude()})
+                    );
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
