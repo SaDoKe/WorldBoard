@@ -64,10 +64,9 @@ public class MainActivity extends AppCompatActivity {
             imgCompass.startAnimation(ra);
         });
 
-        fab.setOnClickListener(view ->
+        fab.setOnClickListener( view ->
                 startActivity(new Intent(this, CreateMessageActivity.class))
         );
-
     }
 
     @Override

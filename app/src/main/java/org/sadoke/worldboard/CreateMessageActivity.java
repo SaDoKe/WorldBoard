@@ -6,11 +6,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.EditText;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
 
 public class CreateMessageActivity extends AppCompatActivity {
     ActionBar actionBar;
+    FloatingActionButton floatingActionButton;
+    EditText editText;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -28,6 +34,12 @@ public class CreateMessageActivity extends AppCompatActivity {
         actionBar =  Objects.requireNonNull(getSupportActionBar());
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Create Message");
+
+        editText = (EditText) findViewById(R.id.mew_message);
+
+        floatingActionButton.setOnClickListener(view -> {
+            editText.getText();
+        });
 
     }
 }
