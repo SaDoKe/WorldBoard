@@ -45,7 +45,9 @@ public class FusedLocationTracker extends LocationCallback {
 
     @SuppressLint("MissingPermission")
     public Location getLastLocation() {
-        return fusedLocationProviderClient.getLastLocation().getResult();
+        final Location[] lastLoc = new Location[1];
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> lastLoc[0] = location);
+        return lastLoc[0];
     }
 
 }

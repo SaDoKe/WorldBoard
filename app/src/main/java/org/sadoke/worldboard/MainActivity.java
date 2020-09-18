@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,8 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONObject;
 import org.sadoke.worldboard.locationtracker.FusedLocationTracker;
@@ -27,6 +30,7 @@ import java.util.stream.Stream;
 public class MainActivity extends AppCompatActivity {
     private ImageView imgCompass;
     private TextView txtDegrees;
+    private FloatingActionButton fab;
     private float currentDegree;
     private RESTApi api;
     private MainViewModel mainViewModel;
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         imgCompass = (ImageView) findViewById(R.id.imgCompass);
         txtDegrees = (TextView) findViewById(R.id.txtDegrees);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fusedLocationTracker = new FusedLocationTracker(this);
         sensorManager = new SensorDataManager(this, mainViewModel);
         api = RESTApi.init(this);
@@ -58,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
             ra.setFillAfter(true);
             imgCompass.startAnimation(ra);
         });
+
+        fab.setOnClickListener(view ->
+                startActivity(new Intent(this, CreateMessageActivity.class))
+        );
 
     }
 

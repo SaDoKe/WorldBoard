@@ -68,7 +68,7 @@ public class SensorDataManager implements SensorEventListener {
                 mRotationVector = sensorEvent;
                 break;
         }
-        if (mGravity != null && mGeomagnetic != null)
+        if (mGravity != null && mGeomagnetic != null && mRotationVector != null)
             mainViewModel.setDegree(interpreter.degreeNord(mRotationVector, mGravity, mGeomagnetic));
 
         if (windowCounter == 0)
@@ -79,12 +79,13 @@ public class SensorDataManager implements SensorEventListener {
             windows.add(sensorEvent.values[2]);
             if (windowCounter == 5) {
                 Location loc = mainActivity.fusedLocationTracker.getLastLocation();
-                try {
-                    mainActivity.sendLogs(
+                if (loc != null)
+                    try {
+                        mainActivity.sendLogs(
                             interpreter.movementVector(windows, 1000,
                                     new double[]{mLocation.getLatitude(), mLocation.getLongitude()},
                                     new double[]{loc.getLatitude(), loc.getLongitude()})
-                    );
+                        );
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
