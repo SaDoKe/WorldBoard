@@ -1,53 +1,63 @@
 package org.sadoke.worldboard.locationtracker;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.location.Location;
-import android.os.Looper;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 
 import org.sadoke.worldboard.MainActivity;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
-public class FusedLocationTracker extends LocationCallback {
-    LocationRequest locationRequest = new LocationRequest();
-    FusedLocationProviderClient fusedLocationProviderClient;
+public class FusedLocationTracker implements LocationListener {
+    LocationManager locationManager;
+    LocationRequest locationRequest;
 
     public FusedLocationTracker(MainActivity mainActivity) {
         super();
+        locationManager = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
+        locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(400);
         locationRequest.setFastestInterval(400);
-        fusedLocationProviderClient = getFusedLocationProviderClient(mainActivity);
     }
 
     @SuppressLint("MissingPermission")
     public void startTracking() {
-        fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest,
-                this,
-                Looper.myLooper()
-        );
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 0, this);
     }
 
     public void stopTracking() {
-        fusedLocationProviderClient.removeLocationUpdates(this);
-    }
-
-    @Override
-    public void onLocationResult(LocationResult locationResult) {
-        super.onLocationResult(locationResult);
+        locationManager.removeUpdates(this);
     }
 
     @SuppressLint("MissingPermission")
     public Location getLastLocation() {
-        final Location[] lastLoc = new Location[1];
-        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> lastLoc[0] = location);
-        return lastLoc[0];
+        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
 }

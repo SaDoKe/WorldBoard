@@ -82,13 +82,14 @@ public class SensorDataManager implements SensorEventListener {
                 Location loc = mainActivity.fusedLocationTracker.getLastLocation();
                 if (loc != null)
                     try {
+                        Log.e("Send", "°°");
                         mainActivity.sendLogs(
                             interpreter.movementVector(windows, 1000,
                                     new double[]{mLocation.getLatitude(), mLocation.getLongitude()},
                                     new double[]{loc.getLatitude(), loc.getLongitude()})
                         );
                 } catch (JSONException e) {
-                        Log.e()
+                        Log.e("SEND LOG TO SERVER in SensorDataManager", e.getMessage());
                 }
                 windows = new ArrayList<>();
             }

@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         txtDegrees = (TextView) findViewById(R.id.txtDegrees);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fusedLocationTracker = new FusedLocationTracker(this);
+        fusedLocationTracker.startTracking();
         sensorManager = new SensorDataManager(this, mainViewModel);
         api = RESTApi.init(this);
 
