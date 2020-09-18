@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.animation.Animation;
@@ -64,8 +65,13 @@ public class MainActivity extends AppCompatActivity {
             imgCompass.startAnimation(ra);
         });
 
-        fab.setOnClickListener( view ->
-                startActivity(new Intent(this, CreateMessageActivity.class))
+        fab.setOnClickListener( view -> {
+                    Intent intent = new Intent(this, CreateMessageActivity.class);
+                    Location location = fusedLocationTracker.getLastLocation();
+                    intent.putExtra("LAT", location.getLatitude());
+                    intent.putExtra("LNG", location.getLongitude());
+                    startActivity(intent);
+                }
         );
     }
 

@@ -6,6 +6,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Handler;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.sadoke.worldboard.Interpreter;
@@ -87,7 +88,7 @@ public class SensorDataManager implements SensorEventListener {
                                     new double[]{loc.getLatitude(), loc.getLongitude()})
                         );
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                        Log.e()
                 }
                 windows = new ArrayList<>();
             }

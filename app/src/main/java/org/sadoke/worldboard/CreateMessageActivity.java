@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
 
@@ -31,7 +30,7 @@ public class CreateMessageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_message);
-        actionBar =  Objects.requireNonNull(getSupportActionBar());
+        actionBar = Objects.requireNonNull(getSupportActionBar());
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Create Message");
 
@@ -40,6 +39,5 @@ public class CreateMessageActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(view -> {
             editText.getText();
         });
-
     }
 }
