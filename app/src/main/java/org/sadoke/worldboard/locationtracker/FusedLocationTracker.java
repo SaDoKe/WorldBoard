@@ -32,8 +32,13 @@ public class FusedLocationTracker implements LocationListener {
         locationManager = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
     }
 
-    @SuppressLint("MissingPermission")
     public void startTracking() {
+        if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mainActivity,
+                    Arrays.asList(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION).toArray(new String[]{}),
+                    0);
+        }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 0, this);
     }
 
