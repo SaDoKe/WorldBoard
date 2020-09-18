@@ -16,21 +16,15 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 public class FusedLocationTracker implements LocationListener {
     LocationManager locationManager;
-    LocationRequest locationRequest;
 
     public FusedLocationTracker(MainActivity mainActivity) {
         super();
         locationManager = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
-        locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(400);
-        locationRequest.setFastestInterval(400);
     }
 
     @SuppressLint("MissingPermission")
     public void startTracking() {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 0, this);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 0, this);
     }
 
     public void stopTracking() {
@@ -44,7 +38,7 @@ public class FusedLocationTracker implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.e("xxx","never ever"+location.getLatitude());
+        Log.e("lat", location.getLatitude()+"");
     }
 
     @Override

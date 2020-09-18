@@ -82,7 +82,6 @@ public class SensorDataManager implements SensorEventListener {
                 Location loc = mainActivity.fusedLocationTracker.getLastLocation();
                 if (loc != null)
                     try {
-                        Log.e("Send", "°°");
                         mainActivity.sendLogs(
                             interpreter.movementVector(windows, 1000,
                                     new double[]{mLocation.getLatitude(), mLocation.getLongitude()},
