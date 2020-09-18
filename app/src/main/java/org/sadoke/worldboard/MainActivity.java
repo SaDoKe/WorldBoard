@@ -2,12 +2,14 @@ package org.sadoke.worldboard;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.location.Location;
 import android.os.Bundle;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.sadoke.worldboard.locationtracker.FusedLocationTracker;
 import org.sadoke.worldboard.sensormanager.SensorDataManager;
@@ -31,6 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MainActivity extends AppCompatActivity {
+    private ConstraintLayout root;
     private ImageView imgCompass;
     private TextView txtDegrees;
     private FloatingActionButton fab;
@@ -42,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private Runnable runnable;
 
+    ImageView imageView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 new MainViewModel(this).getDefaultViewModelProviderFactory()
         ).get(MainViewModel.class);
 
+        root = (ConstraintLayout) findViewById(R.id.root);
         imgCompass = (ImageView) findViewById(R.id.imgCompass);
         txtDegrees = (TextView) findViewById(R.id.txtDegrees);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -88,7 +96,39 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 Location location = fusedLocationTracker.getLastLocation();
                 api.getNextMessage(location.getLatitude(), location.getLongitude(), result -> {
-                    Log.e("ghghghghg", result.toString());
+                    JSONArray points;
+                    try {
+                        points = result.getJSONArray("messagePoints");
+                        for (int i =0;i<points.length();i++) {
+                            JSONObject point = points.getJSONObject(i);
+                            JSONObject position = point.getJSONObject("position");
+                            double latt = position.getDouble("lattitude");
+                            double longitude = position.getDouble("longitude");
+
+                            if (imageView != null)
+                                root.removeView(imageView);
+                            //ImageView Setup
+                            imageView = new ImageView(MainActivity.this);
+
+                            //setting image resource
+                            imageView.setImageResource(R.drawable.message);
+
+                            //setting image position
+                            imageView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT,
+                                    ConstraintLayout.LayoutParams.WRAP_CONTENT));
+
+                            //adding view to layout
+                            root.addView(imageView);
+
+                            Interpreter interpreter = Interpreter.getInterpreter();
+
+                            imageView.setRotation(interpreter.degreeToMessage(
+                                    new double[]{location.getLatitude(), location.getLongitude()},
+                                    new double[]{latt, longitude}) + currentDegree);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 });
                 handler.postDelayed(this, 5000);
             }

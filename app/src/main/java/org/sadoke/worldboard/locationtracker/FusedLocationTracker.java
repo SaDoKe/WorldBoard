@@ -1,7 +1,6 @@
 package org.sadoke.worldboard.locationtracker;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -12,15 +11,9 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import com.google.android.gms.location.LocationRequest;
-
 import org.sadoke.worldboard.MainActivity;
 
 import java.util.Arrays;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-
 
 public class FusedLocationTracker implements LocationListener {
     MainActivity mainActivity;

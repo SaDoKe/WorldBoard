@@ -183,9 +183,9 @@ public class Interpreter {
      * @param lokM
      * @return
      */
-    public double degreeToMessage(double lokU[], double lokM[]) {
+    public float degreeToMessage(double lokU[], double lokM[]) {
             double lokNordpol[] = new double[2];
-            double degree;
+            float degree;
             double rad;
 
             lokNordpol[0] = 90;
@@ -198,7 +198,7 @@ public class Interpreter {
             vektorMessage[1] = lokM[1]-lokU[1];
 
             rad = Math.acos((vektorNord[0]*vektorMessage[0]+vektorNord[1]*vektorMessage[1])/(Math.sqrt(vektorNord[0]*vektorNord[0]+vektorNord[1]*vektorNord[1]))*Math.sqrt(vektorMessage[0]*vektorMessage[0]+vektorMessage[1]*vektorMessage[1]));
-            degree = Math.toDegrees(rad);
+            degree = (float) Math.toDegrees(rad);
 
             return degree;
     }
