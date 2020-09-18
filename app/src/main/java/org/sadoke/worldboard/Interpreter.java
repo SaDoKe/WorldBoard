@@ -6,18 +6,17 @@ import android.hardware.SensorManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-
 import static java.lang.Math.*;
 
 public class Interpreter {
+    int MULTIPLIKATOR = 1000;
     private static Interpreter interpreter;
 
-    private Interpreter() {
+    private Interpreter(){
     }
 
-    public static Interpreter getInterpreter() {
+    public static Interpreter getInterpreter(){
         if (interpreter == null)
             interpreter = new Interpreter();
         return interpreter;
@@ -25,13 +24,12 @@ public class Interpreter {
 
     /**
      * Returns the direction of the needle.
-     *
      * @return degree
      */
     @Deprecated
-    public float degreeNord(SensorEvent event) {
-        return round(event.values[0]);
-    }
+    public float degreeNord(SensorEvent event){
+       return round(event.values[0]);
+    };
 
     /**
      * Returns the direction of the needle.
@@ -77,11 +75,10 @@ public class Interpreter {
      * Returns the accelerometer fields in a JSON object.
      * like
      * {
-     * "x_Axis":"13,37",
-     * "y_Axis":"13,37",
-     * "z_Axis":"13,37"
+     *      "x_Axis":"13,37",
+     *      "y_Axis":"13,37",
+     *      "z_Axis":"13,37"
      * } in m/(s^2)
-     *
      * @param event
      * @return
      */
@@ -99,34 +96,30 @@ public class Interpreter {
 
 
     //TODO: testen
-
-    /**
-     * ACHTUNG, KANN GERNE NOCH GETESTET WERDEN
-     *
+    /**ACHTUNG, KANN GERNE NOCH GETESTET WERDEN
      * @param accList
      * @param locVor     [latitude,longitude]
      * @param locNach    [latitude,longitude]
      * @return
      */
-    public JSONObject movementVector(ArrayList<Float> accList, float[] locVor, float[] locNach) throws JSONException {
-        int MULTIPLICATION = 1000;
+    public JSONObject movementVector(ArrayList<Float> accList, int multiplier, float[] locVor, float[] locNach) throws JSONException {
         int length = (accList.size() / 3);
         JSONArray jsons = new JSONArray();
-        double movementVector;
+        double movementVektor;
         float latDist, lngtDist;
 
         JSONObject request = new JSONObject();
 
-        latDist = (locNach[0] - locVor[0]) * MULTIPLICATION;
-        lngtDist = (locNach[0] - locVor[0]) * MULTIPLICATION;
-        movementVector = sqrt(pow(latDist, 2) + pow(lngtDist, 2));
+        latDist = (locNach[0] - locVor[0]) * MULTIPLIKATOR;
+        lngtDist = (locNach[0] - locVor[0]) * MULTIPLIKATOR;
+        movementVektor = sqrt(pow(latDist, 2) + pow(lngtDist, 2));
 
         //ACHTUNG: KP OB DAS FUNZT
         for (int i = 3; i <= length * 3; i = i + 3) {
             jsons.put(new JSONObject().put("accelX", accList.get(i - 3)).put("accelY", accList.get(i - 2)).put("accelZ", accList.get(i - 1)));
         }
 
-        request.put("accel", jsons).put("movementVector", movementVector);
+        request.put("accel",jsons).put("movementVector",movementVektor);
         return request;
     }
 

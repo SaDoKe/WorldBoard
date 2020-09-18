@@ -22,14 +22,14 @@ public class MainViewModel extends ViewModel implements HasDefaultViewModelProvi
     /**
      * Makes a LiveData out of JSONObject
      */
-    private MutableLiveData<JSONObject> degree;
-    public LiveData<JSONObject> getDegree() {
+    private MutableLiveData<Float> degree;
+    public LiveData<Float> getDegree() {
         if (degree == null) {
-            degree = new MutableLiveData<JSONObject>();
+            degree = new MutableLiveData<>();
         }
         return degree;
     }
-    private void setDegree(JSONObject jsonDegree){
+    public void setDegree(Float jsonDegree){
         degree.setValue(jsonDegree);
     }
 
