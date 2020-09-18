@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.location.LocationRequest;
 
@@ -43,7 +44,7 @@ public class FusedLocationTracker implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-
+        Log.e("xxx","never ever"+location.getLatitude());
     }
 
     @Override

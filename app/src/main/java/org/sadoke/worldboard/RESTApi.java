@@ -90,7 +90,7 @@ public class RESTApi {
      * @param longitude
      * @param lattitude
      */
-    private void createMessage(String message, VolleyCallback<JSONObject> callback, float longitude, float lattitude) {
+     public void createMessage(String message, VolleyCallback<JSONObject> callback, float longitude, float lattitude) {
         String url = String.format(serverAddress, "message/create/" + this.userToken);
 
         JSONObject jsonBody = new JSONObject();

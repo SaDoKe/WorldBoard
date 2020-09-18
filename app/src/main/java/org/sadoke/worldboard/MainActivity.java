@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener( view -> {
                     Intent intent = new Intent(this, CreateMessageActivity.class);
                     Location location = fusedLocationTracker.getLastLocation();
+                    Log.e("Address", location.getLatitude()+"");
+                    Log.e("Address2", location.getLongitude()+"");
                     intent.putExtra("LAT", location.getLatitude());
                     intent.putExtra("LNG", location.getLongitude());
                     startActivity(intent);
