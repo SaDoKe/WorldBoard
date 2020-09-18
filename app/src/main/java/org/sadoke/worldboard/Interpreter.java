@@ -6,17 +6,18 @@ import android.hardware.SensorManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+
 import static java.lang.Math.*;
 
 public class Interpreter {
-    int MULTIPLIKATOR = 1000;
     private static Interpreter interpreter;
 
-    private Interpreter(){
+    private Interpreter() {
     }
 
-    public static Interpreter getInterpreter(){
+    public static Interpreter getInterpreter() {
         if (interpreter == null)
             interpreter = new Interpreter();
         return interpreter;
@@ -24,21 +25,29 @@ public class Interpreter {
 
     /**
      * Returns the direction of the needle.
+     *
      * @return degree
      */
     @Deprecated
-    public float degreeNord(SensorEvent event){
-       return round(event.values[0]);
-    };
+    public float degreeNord(SensorEvent event) {
+        return round(event.values[0]);
+    }
 
-    public float degreeNord(SensorEvent mGravityEvent, SensorEvent mGeomagneticEvent){
+    /**
+     * Returns the direction of the needle.
+     *
+     * @param mGravityEvent
+     * @param mGeomagneticEvent
+     * @return
+     */
+    public float degreeNord(SensorEvent mGravityEvent, SensorEvent mGeomagneticEvent) {
         final float ALPHA = 0.97f;
         float[] mGravity = new float[3];
         float[] mGeomagnetic = new float[3];
         float[] R = new float[9];
         float[] I = new float[9];
+        float azimuthFix = 180;
         float azimuth;
-        float azimuthFix=0;
 
         mGravity[0] = ALPHA * mGravity[0] + (1 - ALPHA)
                 * mGravityEvent.values[0];
@@ -68,19 +77,20 @@ public class Interpreter {
      * Returns the accelerometer fields in a JSON object.
      * like
      * {
-     *      "x_Axis":"13,37",
-     *      "y_Axis":"13,37",
-     *      "z_Axis":"13,37"
+     * "x_Axis":"13,37",
+     * "y_Axis":"13,37",
+     * "z_Axis":"13,37"
      * } in m/(s^2)
+     *
      * @param event
      * @return
      */
-    public JSONObject accelerometer (SensorEvent event){
+    public JSONObject accelerometer(SensorEvent event) {
         JSONObject accelerometerJSON = new JSONObject();
         try {
-            accelerometerJSON.put("x_Axis",event.values[0]);
-            accelerometerJSON.put("y_Axis",event.values[1]);
-            accelerometerJSON.put("z_Axis",event.values[2]);
+            accelerometerJSON.put("x_Axis", event.values[0]);
+            accelerometerJSON.put("y_Axis", event.values[1]);
+            accelerometerJSON.put("z_Axis", event.values[2]);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -89,32 +99,34 @@ public class Interpreter {
 
 
     //TODO: testen
-    /**ACHTUNG, KANN GERNE NOCH GETESTET WERDEN
+
+    /**
+     * ACHTUNG, KANN GERNE NOCH GETESTET WERDEN
      *
      * @param accList
-     * @param multiplier
-     * @param locVor [latitude,longitude]
-     * @param locNach [latitude,longitude]
+     * @param locVor     [latitude,longitude]
+     * @param locNach    [latitude,longitude]
      * @return
      */
-    public JSONObject movementVector(ArrayList<Float> accList, int multiplier, float[] locVor,float[] locNach) throws JSONException {
-        int length = (accList.size()/3);
+    public JSONObject movementVector(ArrayList<Float> accList, float[] locVor, float[] locNach) throws JSONException {
+        int MULTIPLICATION = 1000;
+        int length = (accList.size() / 3);
         JSONArray jsons = new JSONArray();
-        double movementVektor;
-        float latDist,lngtDist;
+        double movementVector;
+        float latDist, lngtDist;
 
         JSONObject request = new JSONObject();
 
-        latDist = (locNach[0]-locVor[0])*MULTIPLIKATOR;
-        lngtDist = (locNach[0]-locVor[0])*MULTIPLIKATOR;
-        movementVektor =  sqrt(pow(latDist,2)+pow(lngtDist,2));
+        latDist = (locNach[0] - locVor[0]) * MULTIPLICATION;
+        lngtDist = (locNach[0] - locVor[0]) * MULTIPLICATION;
+        movementVector = sqrt(pow(latDist, 2) + pow(lngtDist, 2));
 
         //ACHTUNG: KP OB DAS FUNZT
-        for(int i=3;i<=length*3;i=i+3){
-            jsons.put(new JSONObject().put("accelX",accList.get(i-3)).put("accelY",accList.get(i-2)).put("accelZ",accList.get(i-1)));
+        for (int i = 3; i <= length * 3; i = i + 3) {
+            jsons.put(new JSONObject().put("accelX", accList.get(i - 3)).put("accelY", accList.get(i - 2)).put("accelZ", accList.get(i - 1)));
         }
 
-        request.put("accel",jsons).put("movementVector",movementVektor);
+        request.put("accel", jsons).put("movementVector", movementVector);
         return request;
     }
 
@@ -122,17 +134,18 @@ public class Interpreter {
      * Gives back the x and y Axis in JSON back.
      * like
      * {
-     *     x_Axis:"",
-     *     y_Axis:""
+     * x_Axis:"",
+     * y_Axis:""
      * }
+     *
      * @param event
      * @return
      */
-    public JSONObject location(SensorEvent event){
-        JSONObject locationJSON= new JSONObject();
+    public JSONObject location(SensorEvent event) {
+        JSONObject locationJSON = new JSONObject();
         try {
-            locationJSON.put("x_Axis",event.values[0]);
-            locationJSON.put("y_Axis",event.values[1]);
+            locationJSON.put("x_Axis", event.values[0]);
+            locationJSON.put("y_Axis", event.values[1]);
         } catch (JSONException e) {
             e.printStackTrace();
         }
