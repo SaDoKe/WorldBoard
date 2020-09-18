@@ -1,45 +1,35 @@
 package org.sadoke.worldboard;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.json.JSONObject;
+import org.sadoke.worldboard.sensormanager.SensorDataManager;
 import org.sadoke.worldboard.ui.main.MainViewModel;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
-
+public class MainActivity extends AppCompatActivity {
     private ImageView imgCompass;
     private TextView txtDegrees;
-    private SensorManager sensorManager;
     private float currentDegree;
-
     private RESTApi api;
-
     private MainViewModel mainViewModel;
+    private SensorDataManager sensorManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,21 +43,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         imgCompass = (ImageView) findViewById(R.id.imgCompass);
         txtDegrees = (TextView) findViewById(R.id.txtDegrees);
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorManager = new SensorDataManager(this, mainViewModel);
         api = RESTApi.init(this);
-        api.getNextMessage(0F, 0F, result -> Log.e("test", result.toString()));
+
+        mainViewModel.getDegree().observe(this, degree -> {
+            txtDegrees.setText("Rotation: " + degree + " degrees");
+            RotateAnimation ra = new RotateAnimation(currentDegree, -degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            ra.setDuration(120);
+            ra.setFillAfter(true);
+            imgCompass.startAnimation(ra);
+            currentDegree = -degree;
+        });
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        sensorManager.startLogging();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener((SensorEventListener) this);
+        sensorManager.stopLogging();
     }
 
     /**
@@ -116,21 +115,5 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (!allPermissionsGranted(grantResults))
             ActivityCompat.requestPermissions(this, permissions, 0);
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        float degree = Math.round(event.values[0]);
-        txtDegrees.setText("Rotation: " + Float.toString(degree) + " degrees");
-        RotateAnimation ra = new RotateAnimation(currentDegree, -degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        ra.setDuration(120);
-        ra.setFillAfter(true);
-        imgCompass.startAnimation(ra);
-        currentDegree = -degree;
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 }

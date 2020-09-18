@@ -16,7 +16,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.pow
 import kotlin.math.sqrt
-
+/*
 class SensorManagementClass(private val activity: MainActivity) : SensorEventListener {
     private val locMan: LocationManager = activity.getSystemService(LOCATION_SERVICE) as LocationManager
     private val senMan: SensorManager = activity.getSystemService(SENSOR_SERVICE) as SensorManager
@@ -102,4 +102,4 @@ class SensorManagementClass(private val activity: MainActivity) : SensorEventLis
 
         senMan.unregisterListener(this)
     }
-}
+}*/
