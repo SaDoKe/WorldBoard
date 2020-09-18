@@ -105,6 +105,8 @@ public class RESTApi {
                 callback::onSuccess,
                 error -> Log.e("sendError", "ein Oopsi:"+error.toString())
         );
+        queue.add(postalRequest);
+
     }
 
     /**
@@ -131,6 +133,15 @@ public class RESTApi {
          );
 
         // Access the RequestQueue
+        queue.add(postalRequest);
+    }
+
+    public void sendPosition(VolleyCallback<JSONObject> callback,JSONObject position){
+        String url = String.format(serverAddress, "/training/classify/" + userToken);
+        JsonObjectRequest postalRequest = new JsonObjectRequest( url, position,
+                callback::onSuccess,
+                error -> Log.e("sendError", "ein Oopsi:"+error.toString())
+        );
         queue.add(postalRequest);
     }
 }
