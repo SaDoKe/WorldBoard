@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendLogs(JSONObject jsonObject) {
-        api.
+        api.sendPosition(result -> Log.e("SendLogs", result.toString()), jsonObject);
     }
 
     /**

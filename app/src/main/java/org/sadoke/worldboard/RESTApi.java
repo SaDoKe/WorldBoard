@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -23,8 +24,8 @@ public class RESTApi {
 
     /**
      * Private Constructor, initilize Object
-     * @param context
-     * Context of calling instance
+     *
+     * @param context Context of calling instance
      */
     private RESTApi(Context context) {
         this.context = context;
@@ -32,7 +33,7 @@ public class RESTApi {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         this.userToken = prefs.getString("user_token", null);
         if (userToken == null)
-            createUser( result -> {
+            createUser(result -> {
                 try {
                     this.userToken = new JSONObject(result).getString("key");
                     prefs.edit().putString("user_token", this.userToken).apply();
@@ -44,6 +45,7 @@ public class RESTApi {
 
     /**
      * Creates Static RESTApi Object
+     *
      * @param context
      * @return Static instance of RESTApi
      */
@@ -56,8 +58,8 @@ public class RESTApi {
 
     /**
      * Requests a new User from Server
-     * @param callback
-     * Callback funktion, used for async Server Answer
+     *
+     * @param callback Callback funktion, used for async Server Answer
      */
     private void createUser(VolleyCallback<String> callback) {
         String url = String.format(serverAddress, "user/create/" + context.getResources().getString(R.string.world_board_api_key));
@@ -82,65 +84,63 @@ public class RESTApi {
      */
     /**
      * Sends a new message whit the userKey, the message and the location to the Server.
+     *
      * @param message
      * @param callback
      * @param longitude
      * @param lattitude
      */
-    private void createMessage(String message, VolleyCallback<JSONObject> callback, float longitude,float lattitude){
+    private void createMessage(String message, VolleyCallback<JSONObject> callback, float longitude, float lattitude) {
         String url = String.format(serverAddress, "message/create/" + this.userToken);
 
         JSONObject jsonBody = new JSONObject();
         JSONObject jsonPosition = new JSONObject();
         try {
-            jsonBody.put("message",message);
-            jsonPosition.put("longitude",longitude);
-            jsonPosition.put("lattitude",lattitude);
-            jsonBody.put("position",jsonPosition);
+            jsonBody.put("message", message);
+            jsonPosition.put("longitude", longitude);
+            jsonPosition.put("lattitude", lattitude);
+            jsonBody.put("position", jsonPosition);
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e("MessageCreate","Fehler beim erstellen des Bodys in createMessage");
+            Log.e("MessageCreate", "Fehler beim erstellen des Bodys in createMessage");
         }
-        JsonObjectRequest postalRequest = new JsonObjectRequest( url, jsonBody,
+        JsonObjectRequest postalRequest = new JsonObjectRequest(url, jsonBody,
                 callback::onSuccess,
-                error -> Log.e("sendError", "ein Oopsi:"+error.toString())
+                error -> Log.e("sendError", "ein Oopsi:" + error.toString())
         );
         queue.add(postalRequest);
-
     }
 
     /**
      * Sends Actuel Position and gets List of near by Messages
-     * @param lat
-     * Latitude of user
-     * @param lng
-     * Longitude of user
-     * @param callback
-     * Callback funktion, used for async Server Answer
+     *
+     * @param lat      Latitude of user
+     * @param lng      Longitude of user
+     * @param callback Callback funktion, used for async Server Answer
      */
     public void getNextMessage(Float lat, Float lng, VolleyCallback<JSONObject> callback) {
-       String url = String.format(serverAddress, "message/next/" + userToken + "?lattitude=" + lat + "&longitude=" + lng);
+        String url = String.format(serverAddress, "message/next/" + userToken + "?lattitude=" + lat + "&longitude=" + lng);
 
-         StringRequest postalRequest = new StringRequest(Request.Method.GET, url,
-                 response -> {
-                     try {
-                         callback.onSuccess(new JSONObject(response));
-                     } catch (JSONException e) {
-                         e.printStackTrace();
-                     }
-                 },
-                 error -> Log.e("sendError", error.toString())
-         );
+        StringRequest postalRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        callback.onSuccess(new JSONObject(response));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> Log.e("sendError", error.toString())
+        );
 
         // Access the RequestQueue
         queue.add(postalRequest);
     }
 
-    public void sendPosition(VolleyCallback<JSONObject> callback,JSONObject position){
+    public void sendPosition(VolleyCallback<JSONObject> callback, JSONObject position) {
         String url = String.format(serverAddress, "/training/classify/" + userToken);
-        JsonObjectRequest postalRequest = new JsonObjectRequest( url, position,
+        JsonObjectRequest postalRequest = new JsonObjectRequest(url, position,
                 callback::onSuccess,
-                error -> Log.e("sendError", "ein Oopsi:"+error.toString())
+                error -> Log.e("sendError", "ein Oopsi:" + error.toString())
         );
         queue.add(postalRequest);
     }
