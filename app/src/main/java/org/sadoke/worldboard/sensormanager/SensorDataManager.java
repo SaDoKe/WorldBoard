@@ -6,8 +6,11 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import org.sadoke.worldboard.Interpreter;
 import org.sadoke.worldboard.MainActivity;
+import org.sadoke.worldboard.ui.main.MainViewModel;
 
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -22,9 +25,13 @@ public class SensorDataManager implements SensorEventListener {
             handler.postDelayed(this, 400);
         }
     };
+    private MainViewModel mainViewModel;
+    private int windows = 0;
+    private Interpreter interpreter = Interpreter.getInterpreter();
 
-    public SensorDataManager(MainActivity mainActivity) {
+    public SensorDataManager(MainActivity mainActivity, MainViewModel mainViewModel) {
         this.sensorManager = (SensorManager) mainActivity.getSystemService(SENSOR_SERVICE);
+        this.mainViewModel = mainViewModel;
     }
 
     public void startLogging() {
@@ -35,16 +42,22 @@ public class SensorDataManager implements SensorEventListener {
         handler.removeCallbacks(runnable);
     }
 
+    SensorEvent mGravity;
+    SensorEvent mGeomagnetic;
+
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
+    public synchronized void onSensorChanged(SensorEvent sensorEvent) {
         switch (sensorEvent.sensor.getType()) {
             case Sensor.TYPE_MAGNETIC_FIELD:
-                Interpreter.getInterpreter().degreeNord(sensorEvent);
+                mGravity = sensorEvent;
                 break;
             case Sensor.TYPE_ACCELEROMETER:
-                Interpreter.getInterpreter().accelerometer(sensorEvent);
+                mGeomagnetic = sensorEvent;
+                interpreter.accelerometer(sensorEvent);
                 break;
         }
+        if (mGravity != null && mGeomagnetic != null)
+            mainViewModel.setDegree(interpreter.degreeNord(mGravity, mGeomagnetic));
     }
 
     @Override

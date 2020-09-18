@@ -1,6 +1,7 @@
 package org.sadoke.worldboard.locationtracker;
 
 import android.annotation.SuppressLint;
+import android.location.Location;
 import android.os.Looper;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -41,4 +42,10 @@ public class FusedLocationTracker extends LocationCallback {
     public void onLocationResult(LocationResult locationResult) {
         super.onLocationResult(locationResult);
     }
+
+    @SuppressLint("MissingPermission")
+    public Location getLastLocation() {
+        return fusedLocationProviderClient.getLastLocation().getResult();
+    }
+
 }
