@@ -49,12 +49,12 @@ public class SensorDataManager implements SensorEventListener {
     public synchronized void onSensorChanged(SensorEvent sensorEvent) {
         switch (sensorEvent.sensor.getType()) {
             case Sensor.TYPE_MAGNETIC_FIELD:
-                mGravity = sensorEvent;
+                mGeomagnetic = sensorEvent;
                 if (mGravity != null && mGeomagnetic != null)
                     mainViewModel.setDegree(interpreter.degreeNord(mGravity, mGeomagnetic));
                 break;
             case Sensor.TYPE_ACCELEROMETER:
-                mGeomagnetic = sensorEvent;
+                mGravity = sensorEvent;
                 interpreter.accelerometer(sensorEvent);
                 break;
         }
