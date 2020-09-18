@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONObject;
+import org.sadoke.worldboard.ui.main.MainViewModel;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -37,11 +39,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private RESTApi api;
 
+    private MainViewModel mainViewModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkNeededPermissions();
+        mainViewModel = new ViewModelProvider(
+                this,
+                new MainViewModel(this).getDefaultViewModelProviderFactory()
+        ).get(MainViewModel.class);
+
         imgCompass = (ImageView) findViewById(R.id.imgCompass);
         txtDegrees = (TextView) findViewById(R.id.txtDegrees);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -53,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener((SensorEventListener) this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
