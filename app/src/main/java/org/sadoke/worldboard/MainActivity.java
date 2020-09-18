@@ -13,6 +13,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+import org.sadoke.worldboard.locationtracker.FusedLocationTracker;
 import org.sadoke.worldboard.sensormanager.SensorDataManager;
 import org.sadoke.worldboard.ui.main.MainViewModel;
 
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private RESTApi api;
     private MainViewModel mainViewModel;
     private SensorDataManager sensorManager;
+    public FusedLocationTracker fusedLocationTracker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         imgCompass = (ImageView) findViewById(R.id.imgCompass);
         txtDegrees = (TextView) findViewById(R.id.txtDegrees);
+        fusedLocationTracker = new FusedLocationTracker(this);
         sensorManager = new SensorDataManager(this, mainViewModel);
         api = RESTApi.init(this);
 
@@ -66,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         sensorManager.stopLogging();
+    }
+
+    public void sendLogs(JSONObject jsonObject) {
+        api.
     }
 
     /**
