@@ -9,8 +9,6 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Point;
-import android.hardware.Sensor;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +27,7 @@ import org.sadoke.worldboard.locationtracker.FusedLocationTracker;
 import org.sadoke.worldboard.sensormanager.SensorDataManager;
 import org.sadoke.worldboard.ui.main.MainViewModel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private Runnable runnable;
 
-    ImageView imageView;
+    List<ImageView> imageViews = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,25 +98,28 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray points;
                     try {
                         points = result.getJSONArray("messagePoints");
-                        for (int i =0;i<points.length();i++) {
+                        for (ImageView image : imageViews)
+                            root.removeView(image);
+                        for (int i =0; i < points.length(); i++) {
                             JSONObject point = points.getJSONObject(i);
                             JSONObject position = point.getJSONObject("position");
                             double latt = position.getDouble("lattitude");
                             double longitude = position.getDouble("longitude");
 
-                            if (imageView != null)
-                                root.removeView(imageView);
-                            //ImageView Setup
-                            imageView = new ImageView(MainActivity.this);
+                            ImageView imageView = new ImageView(MainActivity.this);
 
                             //setting image resource
                             imageView.setImageResource(R.drawable.message);
 
                             //setting image position
                             imageView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT,
-                                    ConstraintLayout.LayoutParams.WRAP_CONTENT));
+                                    ConstraintLayout.LayoutParams.MATCH_PARENT));
 
-                            //adding view to layout
+                            imageView.setTranslationX(0);
+                            imageView.setTranslationY(0);
+
+                            //ImageView Setup
+                            imageViews.add(imageView);
                             root.addView(imageView);
 
                             Interpreter interpreter = Interpreter.getInterpreter();
@@ -126,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                                     new double[]{location.getLatitude(), location.getLongitude()},
                                     new double[]{latt, longitude}) + currentDegree);
                         }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

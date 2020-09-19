@@ -31,56 +31,10 @@ public class Interpreter {
     /**
      * Returns the direction of the needle.
      *
-     * @return degree
-     */
-    @Deprecated
-    public float degreeNord(SensorEvent event) {
-        return round(event.values[0]);
-    }
-
-    ;
-
-    /**
-     * Returns the direction of the needle.
-     *
      * @param mGravityEvent
      * @param mGeomagneticEvent
      * @return
      */
-    public float degreeNord(SensorEvent mGravityEvent, SensorEvent mGeomagneticEvent) {
-        final float ALPHA = 0.97f;
-        float[] mGravity = new float[3];
-        float[] mGeomagnetic = new float[3];
-        float[] R = new float[9];
-        float[] I = new float[9];
-
-        mGravity[0] = ALPHA * mGravity[0] + (1 - ALPHA)
-                * mGravityEvent.values[0];
-        mGravity[1] = ALPHA * mGravity[1] + (1 - ALPHA)
-                * mGravityEvent.values[1];
-        mGravity[2] = ALPHA * mGravity[2] + (1 - ALPHA)
-                * mGravityEvent.values[2];
-
-        mGeomagnetic[0] = ALPHA * mGeomagnetic[0] + (1 - ALPHA)
-                * mGeomagneticEvent.values[0];
-        mGeomagnetic[1] = ALPHA * mGeomagnetic[1] + (1 - ALPHA)
-                * mGeomagneticEvent.values[1];
-        mGeomagnetic[2] = ALPHA * mGeomagnetic[2] + (1 - ALPHA)
-                * mGeomagneticEvent.values[2];
-
-        boolean success = SensorManager.getRotationMatrix(R, I, mGravity,
-                mGeomagnetic);
-        Log.e("d", Arrays.toString(R));
-        if (success) {
-            float orientation[] = new float[3];
-            SensorManager.getOrientation(R, orientation);
-            azimuth = (float) Math.toDegrees(orientation[0]); // orientation
-            azimuth = (azimuth  + 360) % 360;
-            return azimuth;
-        }
-        return azimuth;
-    }
-
     public float degreeNord(SensorEvent mRotationEvent, SensorEvent mGravityEvent, SensorEvent mGeomagneticEvent) {
         int mAzimuth;
         float[] rMat = new float[9];
@@ -96,7 +50,7 @@ public class Interpreter {
         mAzimuth = (int) ((Math.toDegrees(SensorManager.getOrientation(rMat, orientation)[0]) + 360) % 360);
 
         mAzimuth = Math.round(mAzimuth);
-        return -mAzimuth-90;
+        return -mAzimuth;
     }
 
     /**
