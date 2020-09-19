@@ -1,6 +1,7 @@
 package org.sadoke.worldboard;
 
 import android.os.Build;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.RequiresApi;
@@ -35,6 +36,7 @@ public class Message {
         this.author = jsonObject.getJSONObject("author");
         this.position = jsonObject.getJSONObject("position");
         this.imageView = new ImageView(mainActivity);
+        imageView.setId(View.generateViewId());
         //setting image resource
         imageView.setImageResource(R.drawable.message);
         //setting image position

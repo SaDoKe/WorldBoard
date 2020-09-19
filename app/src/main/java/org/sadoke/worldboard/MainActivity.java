@@ -14,6 +14,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private Runnable runnable;
 
-    List<ImageView> imageViews = new ArrayList<>();
+    List<Message> messages = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         txtDegrees = (TextView) findViewById(R.id.txtDegrees);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fusedLocationTracker = new FusedLocationTracker(this);
-        if (checkNeededPermissions())
+        while (!checkNeededPermissions())
             fusedLocationTracker.startTracking();
         sensorManager = new SensorDataManager(this, mainViewModel);
         api = RESTApi.init(this);
@@ -97,41 +98,32 @@ public class MainActivity extends AppCompatActivity {
                 Location location = fusedLocationTracker.getLastLocation();
                 api.getNextMessage(location.getLatitude(), location.getLongitude(), result -> {
                     JSONArray points;
+                    for (Message m : messages)
+                        root.removeView(m.getImageView());
+                    messages.clear();
                     try {
                         points = result.getJSONArray("messagePoints");
-                        for (ImageView image : imageViews)
-                            root.removeView(image);
                         for (int i =0; i < points.length(); i++) {
                             JSONObject point = points.getJSONObject(i);
                             JSONObject position = point.getJSONObject("position");
                             double latt = position.getDouble("lattitude");
                             double longitude = position.getDouble("longitude");
 
-                            ImageView imageView = new ImageView(MainActivity.this);
-
-                            //setting image resource
-                            imageView.setImageResource(R.drawable.message);
-
-                            //setting image position
-                            imageView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT,
-                                    ConstraintLayout.LayoutParams.MATCH_PARENT));
-
-                            imageView.setTranslationX(0);
-                            imageView.setTranslationY(0);
+                            Message m = new Message(point, MainActivity.this);
 
                             //ImageView Setup
-                            imageViews.add(imageView);
-                            root.addView(imageView);
+                            messages.add(m);
+                            root.addView(m.getImageView());
+
 
                             Interpreter interpreter = Interpreter.getInterpreter();
 
-                            imageView.setRotation(interpreter.degreeToMessage(
+                            m.getImageView().setRotation(interpreter.degreeToMessage(
                                     new double[]{location.getLatitude(), location.getLongitude()},
                                     new double[]{latt, longitude}) + currentDegree);
                         }
-
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        Log.e("Error in UI Runnable", e.getMessage());
                     }
                 });
                 handler.postDelayed(this, 5000);
@@ -173,8 +165,10 @@ public class MainActivity extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED)
                 neededPermissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         }
-        if (!neededPermissions.isEmpty())
+        if (!neededPermissions.isEmpty()) {
             ActivityCompat.requestPermissions(this, neededPermissions.toArray(new String[]{}), 0);
+            return false;
+        }
         return true;
     }
 
