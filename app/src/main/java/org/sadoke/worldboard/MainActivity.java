@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.Transliterator;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;

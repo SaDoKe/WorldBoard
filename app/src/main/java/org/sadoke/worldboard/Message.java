@@ -18,9 +18,9 @@ public class Message {
     // JSONObject from Server
     private JSONObject jsonObject;
     // Messages Author
-    private Author author;
+    private JSONObject author;
     // Messages Position
-    private Position position;
+    private JSONObject position;
     // Message Image
     private ImageView imageView;
 
@@ -32,8 +32,8 @@ public class Message {
      */
     public Message(JSONObject jsonObject, MainActivity mainActivity) throws JSONException {
         this.jsonObject = jsonObject;
-        this.author = new Author();
-        this.position = new Position();
+        this.author = jsonObject.getJSONObject("author");
+        this.position = jsonObject.getJSONObject("position");
         this.imageView = new ImageView(mainActivity);
         //setting image resource
         imageView.setImageResource(R.drawable.message);
@@ -54,7 +54,7 @@ public class Message {
      * @return ID as Int
      * @throws JSONException
      */
-    public int getId() throws JSONException {
+    public int getMessageId() throws JSONException {
         return jsonObject.getInt("id");
     }
 
@@ -69,21 +69,74 @@ public class Message {
     }
 
     /**
-     * Messages Author
+     * Authors API
      *
-     * @return Author as Author
+     * @return API as int
+     * @throws JSONException
      */
-    public Author getAuthor() {
-        return author;
+    public int getApi() throws JSONException {
+        return author.getInt("api");
     }
 
     /**
-     * Messages Position
+     * Authors Status
      *
-     * @return Position as Position
+     * @return Status as Int
+     * @throws JSONException
      */
-    public Position getPosition() {
-        return position;
+    public int getStatus() throws JSONException {
+        return author.getInt("status");
+    }
+
+    /**
+     * Authors Last Update
+     *
+     * @return Last Update as LocalDateTime
+     * @throws JSONException
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public LocalDateTime getLastUpdate() throws JSONException {
+        return LocalDateTime.parse(author.getString("lastUpdate"));
+    }
+
+    /**
+     * Authors Counter
+     *
+     * @return Counter as int
+     * @throws JSONException
+     */
+    public int getCounter() throws JSONException {
+        return author.getInt("counter");
+    }
+
+    /**
+     * Positions Longitude
+     *
+     * @return Longitude as Double
+     * @throws JSONException
+     */
+    public Double getLongitude() throws JSONException {
+        return position.getDouble("longitude");
+    }
+
+    /**
+     * Postitions Latitude
+     *
+     * @return Latitude as Double
+     * @throws JSONException
+     */
+    public Double getLattitude() throws JSONException {
+        return position.getDouble("lattitude");
+    }
+
+    /**
+     * Positions ID
+     *
+     * @return ID as Int
+     * @throws JSONException
+     */
+    public int getPositionId() throws JSONException {
+        return position.getInt("id");
     }
 
     /**
@@ -92,86 +145,5 @@ public class Message {
      */
     public ImageView getImageView() {
         return imageView;
-    }
-
-    /**
-     * Author Class
-     */
-    private class Author {
-        /**
-         * Authors API
-         *
-         * @return API as int
-         * @throws JSONException
-         */
-        public int getApi() throws JSONException {
-            return jsonObject.getInt("api");
-        }
-
-        /**
-         * Authors Status
-         *
-         * @return Status as Int
-         * @throws JSONException
-         */
-        public int getStatus() throws JSONException {
-            return jsonObject.getInt("status");
-        }
-
-        /**
-         * Authors Last Update
-         *
-         * @return Last Update as LocalDateTime
-         * @throws JSONException
-         */
-        @RequiresApi(api = Build.VERSION_CODES.O)
-        public LocalDateTime getLastUpdate() throws JSONException {
-            return LocalDateTime.parse(jsonObject.getString("lastUpdate"));
-        }
-
-        /**
-         * Authors Counter
-         *
-         * @return Counter as int
-         * @throws JSONException
-         */
-        public int getCounter() throws JSONException {
-            return jsonObject.getInt("counter");
-        }
-    }
-
-    /**
-     * Position Class
-     */
-    private class Position {
-        /**
-         * Positions Longitude
-         *
-         * @return Longitude as Double
-         * @throws JSONException
-         */
-        public Double getLongitude() throws JSONException {
-            return jsonObject.getDouble("longitude");
-        }
-
-        /**
-         * Postitions Latitude
-         *
-         * @return Latitude as Double
-         * @throws JSONException
-         */
-        public Double getLattitude() throws JSONException {
-            return jsonObject.getDouble("lattitude");
-        }
-
-        /**
-         * Positions ID
-         *
-         * @return ID as Int
-         * @throws JSONException
-         */
-        public int getId() throws JSONException {
-            return jsonObject.getInt("id");
-        }
     }
 }
